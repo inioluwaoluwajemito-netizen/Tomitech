@@ -10,6 +10,9 @@ Rebuilt strictly according to the Product Requirements Document (`tomitech-websi
 
 TOMITECH delivers enterprise-grade IP surveillance (CCTV), video management systems (VMS), biometric access control, Cisco structured networking, and Sophos cybersecurity across Nigeria. Proven deliverer of the **151-camera IP surveillance system for the New Tejuosho Market**, Yaba, Lagos.
 
+* **Live Website**: [https://tomitech-zeta.vercel.app](https://tomitech-zeta.vercel.app)
+* **Production Status**: Active on Vercel
+
 ---
 
 ## 🚀 Key Features

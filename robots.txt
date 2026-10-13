@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://tomitechservices.com/sitemap.xml
+Sitemap: https://tomitech-zeta.vercel.app/sitemap.xml
