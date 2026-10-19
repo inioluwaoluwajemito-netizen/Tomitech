@@ -230,19 +230,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 9. NDPA Cookie Consent Notice
-  const cookieBanner = document.getElementById('ndpaCookieBanner');
-  const acceptCookie = document.getElementById('acceptCookiesBtn');
-  if (cookieBanner && acceptCookie) {
-    if (!localStorage.getItem('tomitech_cookie_consent')) {
-      setTimeout(() => {
-        cookieBanner.classList.add('show');
-      }, 1000);
-    }
 
-    acceptCookie.addEventListener('click', () => {
-      localStorage.setItem('tomitech_cookie_consent', 'accepted');
-      cookieBanner.classList.remove('show');
-    });
-  }
 });
