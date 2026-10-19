@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leads & Quote Requests Dashboard | TOMITECH</title>
+  <meta name="robots" content="noindex, nofollow">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    .leads-table-wrap {
+      background: #fff;
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      box-shadow: var(--shadow-md);
+      margin-top: 2rem;
+    }
+    table.leads-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.92rem;
+    }
+    table.leads-table th {
+      background-color: var(--color-navy-950);
+      color: #fff;
+      padding: 1rem 1.25rem;
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    table.leads-table td {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--color-border-subtle);
+      vertical-align: middle;
+    }
+    table.leads-table tr:hover {
+      background-color: #f8fafc;
+    }
+    .status-pill-new {
+      background-color: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .ref-code {
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--color-accent-red);
+    }
+  </style>
+</head>
+<body style="background-color: var(--color-bg-light);">
+
+  <!-- Sticky Header -->
+  <header class="site-header" id="topHeader">
+    <div class="container header-container">
+      <a href="index.html" class="brand-logo" aria-label="TOMITECH Home">
+        <div class="logo-symbol">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M12 8v4"/>
+            <path d="M12 16h.01"/>
+          </svg>
+        </div>
+        <div class="logo-text-group">
+          <span class="logo-text-title">TOMI<span>TECH</span></span>
+          <span class="logo-text-subtitle">Compware Services Ltd</span>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <a href="contact.html" class="btn btn-secondary btn-sm">&larr; Back to Website</a>
+      </div>
+    </div>
+  </header>
+
+  <main style="padding-block: 3.5rem;">
+    <div class="container">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 1.5rem; margin-bottom: 2rem;">
+        <div>
+          <div class="badge badge-red">Database Management</div>
+          <h2>Engineering Quote Requests & Inquiries</h2>
+          <p id="dashboardStatusText">Loading submissions from database and browser archive...</p>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+          <button class="btn btn-secondary btn-sm" id="refreshBtn">🔄 Refresh Leads</button>
+          <button class="btn btn-primary btn-sm" id="exportCsvBtn">📥 Export CSV</button>
+        </div>
+      </div>
+
+      <!-- Stats Counters -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+        <div style="background:#fff; padding:1.5rem; border-radius:var(--radius-sm); border:1px solid var(--color-border-subtle); box-shadow:var(--shadow-sm);">
+          <span style="font-size:0.8rem; text-transform:uppercase; color:var(--color-text-muted); font-weight:700;">Total Inquiries</span>
+          <h3 id="statTotal" style="font-size:2rem; margin-top:0.25rem; color:var(--color-navy-950);">0</h3>
+        </div>
+        <div style="background:#fff; padding:1.5rem; border-radius:var(--radius-sm); border:1px solid var(--color-border-subtle); box-shadow:var(--shadow-sm);">
+          <span style="font-size:0.8rem; text-transform:uppercase; color:var(--color-text-muted); font-weight:700;">Database Connection</span>
+          <h3 id="statDbStatus" style="font-size:1.1rem; margin-top:0.5rem; color:#10b981;">Active</h3>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="leads-table-wrap">
+        <table class="leads-table" id="leadsTable">
+          <thead>
+            <tr>
+              <th>Reference ID</th>
+              <th>Client Name & Company</th>
+              <th>Contact Info</th>
+              <th>Service</th>
+              <th>Location</th>
+              <th>Floor Plan</th>
+              <th>Submitted</th>
+              <th>Quick Actions</th>
+            </tr>
+          </thead>
+          <tbody id="leadsBody">
+            <tr>
+              <td colspan="8" style="text-align:center; padding:3rem; color:var(--color-text-muted);">
+                Scanning database records...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let currentLeads = [];
+
+    async function loadLeads() {
+      const statusText = document.getElementById('dashboardStatusText');
+      const leadsBody = document.getElementById('leadsBody');
+      const dbStatusEl = document.getElementById('statDbStatus');
+
+      let leads = [];
+
+      // 1. Try fetching from Supabase via /api/leads
+      try {
+        const res = await fetch('/api/leads');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.configured && json.leads) {
+            leads = json.leads.map(l => ({
+              referenceId: l.reference_id,
+              name: l.full_name,
+              company: l.company,
+              email: l.email,
+              phone: l.phone,
+              service: l.service_type,
+              location: l.project_location,
+              message: l.scope_message,
+              fileName: l.floor_plan_name,
+              timestamp: l.created_at
+            }));
+            dbStatusEl.textContent = 'Supabase Cloud Linked';
+            dbStatusEl.style.color = '#10b981';
+          } else {
+            dbStatusEl.textContent = 'Local Storage Mode';
+            dbStatusEl.style.color = '#f59e0b';
+          }
+        }
+      } catch (err) {
+        console.warn('Could not query /api/leads:', err);
+      }
+
+      // 2. Merge with LocalStorage backup
+      try {
+        const localLeads = JSON.parse(localStorage.getItem('tomitech_leads_history') || '[]');
+        localLeads.forEach(localItem => {
+          if (!leads.some(item => item.referenceId === localItem.referenceId)) {
+            leads.push(localItem);
+          }
+        });
+      } catch (e) {}
+
+      currentLeads = leads;
+      document.getElementById('statTotal').textContent = leads.length;
+
+      if (leads.length === 0) {
+        leadsBody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align:center; padding:3rem; color:var(--color-text-muted);">
+              No quote requests logged yet. Submit a test inquiry on the <a href="contact.html" style="color:var(--color-accent-red); font-weight:bold;">Contact Page</a>.
+            </td>
+          </tr>
+        `;
+        statusText.textContent = 'Ready to receive inquiries.';
+        return;
+      }
+
+      statusText.textContent = `Displaying ${leads.length} recorded inquiries.`;
+
+      leadsBody.innerHTML = leads.map(l => {
+        const dateFormatted = l.timestamp ? new Date(l.timestamp).toLocaleString() : 'Recent';
+        const waMsg = encodeURIComponent(`Hello ${l.name}, following up regarding your TOMITECH quote request (${l.referenceId}) for ${l.service}.`);
+        return `
+          <tr>
+            <td>
+              <span class="ref-code">${l.referenceId || 'N/A'}</span>
+            </td>
+            <td>
+              <strong>${l.name || 'Anonymous'}</strong><br>
+              <small style="color:var(--color-text-muted);">${l.company || 'Private Client'}</small>
+            </td>
+            <td>
+              <a href="mailto:${l.email}" style="color:var(--color-navy-900); font-weight:600;">${l.email || 'N/A'}</a><br>
+              <a href="tel:${l.phone}" style="color:var(--color-text-muted); font-size:0.85rem;">${l.phone || 'N/A'}</a>
+            </td>
+            <td>
+              <span style="font-weight:600;">${l.service || 'General'}</span>
+            </td>
+            <td>${l.location || 'Lagos'}</td>
+            <td>
+              ${l.fileName ? `📁 <span style="font-size:0.85rem; color:#10b981; font-weight:600;">${l.fileName}</span>` : '<span style="color:#94a3b8;">None</span>'}
+            </td>
+            <td style="font-size:0.82rem; color:var(--color-text-muted);">${dateFormatted}</td>
+            <td>
+              <a href="https://wa.me/${(l.phone || '').replace(/[^0-9]/g, '')}?text=${waMsg}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="background:#25d366; color:#fff; padding:0.35rem 0.65rem; font-size:0.75rem;">WhatsApp</a>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('refreshBtn').addEventListener('click', loadLeads);
+
+    // CSV Export
+    document.getElementById('exportCsvBtn').addEventListener('click', () => {
+      if (!currentLeads.length) {
+        alert('No leads available to export.');
+        return;
+      }
+      let csv = 'ReferenceID,Name,Company,Email,Phone,Service,Location,FileName,Timestamp\n';
+      currentLeads.forEach(l => {
+        csv += `"${l.referenceId}","${l.name}","${l.company}","${l.email}","${l.phone}","${l.service}","${l.location}","${l.fileName || ''}","${l.timestamp}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.setAttribute('href', url);
+      a.setAttribute('download', `tomitech_leads_${new Date().toISOString().slice(0, 10)}.csv`);
+      a.click();
+    });
+
+    document.addEventListener('DOMContentLoaded', loadLeads);
+  </script>
+</body>
+</html>

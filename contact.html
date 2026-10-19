@@ -287,25 +287,49 @@
       </div>
     </section>
 
-    <!-- Submission Feedback Modal (PRD Section 8 F2) -->
+    <!-- Submission Feedback Modal (PRD Section 8 F2 & Database Confirmation) -->
     <div class="lightbox-modal" id="formSuccessModal" role="dialog" aria-modal="true" aria-labelledby="modalClientTitle">
-      <div class="lightbox-content-box" style="max-width: 580px; padding: 2.5rem; text-align: center; background-color: var(--color-surface-white); color: var(--color-text-main);">
-        <div style="width: 64px; height: 64px; background-color: rgba(16, 185, 129, 0.12); color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-inline: auto; margin-bottom: 1.25rem;">
-          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <div class="lightbox-content-box" style="max-width: 600px; padding: 2.5rem; text-align: center; background-color: var(--color-surface-white); color: var(--color-text-main);">
+        <div style="width: 68px; height: 68px; background-color: rgba(16, 185, 129, 0.12); color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-inline: auto; margin-bottom: 1.25rem;">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
         </div>
-        <h3 id="modalClientTitle" style="color: var(--color-navy-950); font-size: 1.6rem; margin-bottom: 0.5rem;">Quote Request Received!</h3>
-        <p style="font-size: 1.05rem; margin-bottom: 1.25rem; color: var(--color-text-muted);">
-          Thank you, <strong id="modalClientName">Client</strong>. Your enquiry and technical specifications have been routed to our Lagos enterprise systems desk.
+        <h3 id="modalClientTitle" style="color: var(--color-navy-950); font-size: 1.65rem; margin-bottom: 0.35rem;">Quote Request Logged!</h3>
+        <p style="font-size: 0.95rem; color: #10b981; font-weight: 700; margin-bottom: 1rem;">
+          ● Recorded in TOMITECH Database System
         </p>
-        <div style="background-color: var(--color-surface-slate); padding: 1.25rem; border-radius: var(--radius-sm); margin-bottom: 1.75rem; text-align: left; font-size: 0.9rem; line-height: 1.6;">
-          <p><strong>Next Steps:</strong></p>
-          <p>1. Confirmation email dispatched to your inbox.</p>
-          <p>2. Lead engineer assigned for survey scheduling within 2 business hours.</p>
-          <p>3. Itemized Bill of Quantities (BOQ) prepared after site inspection.</p>
+        <p style="font-size: 1.05rem; margin-bottom: 1.5rem; color: var(--color-text-muted);">
+          Thank you, <strong id="modalClientName">Client</strong>. Your engineering specifications have been registered.
+        </p>
+
+        <!-- Reference Box -->
+        <div style="background-color: var(--color-surface-slate); border: 1.5px dashed #cbd5e1; border-radius: var(--radius-sm); padding: 1.25rem; margin-bottom: 1.5rem; text-align: center;">
+          <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--color-text-muted); font-weight: 700; letter-spacing: 0.08em;">Tracking Reference ID</span>
+          <div id="modalReferenceId" style="font-family: monospace; font-size: 1.35rem; font-weight: 800; color: var(--color-accent-red); margin-top: 0.25rem;">
+            TOMI-202610-8472
+          </div>
+          <p id="modalDatabaseStatus" style="font-size: 0.82rem; color: #64748b; margin-top: 0.4rem;">
+            Lead securely ingested into database.
+          </p>
         </div>
-        <button class="btn btn-primary" id="successModalClose" style="width: 100%;">Close and Return to Site</button>
+
+        <div style="background-color: var(--color-bg-light); padding: 1.25rem; border-radius: var(--radius-sm); margin-bottom: 1.75rem; text-align: left; font-size: 0.9rem; line-height: 1.6; border: 1px solid var(--color-border-subtle);">
+          <p><strong>Next Steps:</strong></p>
+          <p>1. Confirmation dispatched to your email.</p>
+          <p>2. A senior systems engineer will contact you within 2 business hours.</p>
+          <p>3. On-site optical survey scheduled for your facility.</p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <a id="modalWhatsAppBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="background-color: #25d366; color: #fff; border: none; font-weight: 700;">
+            <svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor">
+              <path d="M16 2a13.9 13.9 0 0 0-12 21L2 30l7.2-1.9A13.9 13.9 0 1 0 16 2zm0 25.5a11.5 11.5 0 0 1-5.9-1.6l-.4-.3-4.4 1.1 1.2-4.3-.3-.4A11.5 11.5 0 1 1 16 27.5zm6.3-8.6c-.3-.2-2-.9-2.3-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7.1a8.9 8.9 0 0 1-2.6-1.6 9.8 9.8 0 0 1-1.8-2.3c-.2-.3 0-.5.1-.7l.5-.6c.2-.2.2-.4.3-.6s0-.4 0-.6-.7-1.7-1-2.4c-.3-.6-.5-.5-.7-.5h-.6a1.2 1.2 0 0 0-.9.4 3.7 3.7 0 0 0-1.1 2.7 6.4 6.4 0 0 0 1.3 3.4 14.6 14.6 0 0 0 5.6 5c.8.3 1.4.5 1.9.7.8.2 1.5.2 2.1.1.7-.1 2-.8 2.3-1.6.3-.7.3-1.4.2-1.6s-.3-.2-.6-.4z"/>
+            </svg>
+            Instant WhatsApp Notification
+          </a>
+          <button class="btn btn-primary" id="successModalClose" style="width: 100%;">Close & Return</button>
+        </div>
       </div>
     </div>
   </main>
